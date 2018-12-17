@@ -1,26 +1,15 @@
 const express = require("express");
 const router = express.Router();
-const connection = require("../../helpers/db");
+const connection = require("../../helpers/db.js");
 
-router.post("/signup", function(req, res, next) {
-  const post = [
-    req.body.email,
-    req.body.password,
-    req.body.name,
-    req.body.lastname
-  ];
+router.post("/signup", (req, res) => {
+  const { email, password, name, lastname } = req.body;
   connection.query(
-    "INSERT INTO users(email,password,name,lastname) VALUES(?,?,?,?)",
-    post,
-    (err, results) => {
-      if (err) {
-        console.log(err);
-        res
-          .status(500)
-          .send("La requête ne peut pas être traitée à létait actuel.");
-      } else {
-        res.sendStatus(200);
-      }
+    `INSERT INTO users (email, password, name, lastname) VALUES (?,?,?,?)`,
+    [email, password, name, lastname],
+    err => {
+      if (error) res.status(500).json({ flash: error.message });
+      else res.status(200).json({ flash: "User has been signed up !" });
     }
   );
 });
